@@ -17,8 +17,12 @@
  *    shallowCopy({a: 2, b: { a: [1, 2, 3]}}) => {a: 2, b: { a: [1, 2, 3]}}
  *    shallowCopy({}) => {}
  */
-function shallowCopy(/* obj */) {
-  throw new Error('Not implemented');
+function shallowCopy(obj) {
+  const newObjCopy = { ...obj };
+  return newObjCopy;
+
+  // const objCopy = Object.assign({}, obj);
+  // return objCopy;
 }
 
 /**
@@ -32,8 +36,42 @@ function shallowCopy(/* obj */) {
  *    mergeObjects([{a: 1, b: 2}, {b: 3, c: 5}]) => {a: 1, b: 5, c: 5}
  *    mergeObjects([]) => {}
  */
-function mergeObjects(/* objects */) {
-  throw new Error('Not implemented');
+function mergeObjects(objects) {
+  // const merged = Object.assign({}, ...objects);
+  // return merged;
+  // const newObj = {};
+  // for (const obj of objects) {
+  //   for (const key in obj) {
+  //     if (obj.hasOwnProperty(key)) {
+  //       if (newObj.hasOwnProperty(key)) {
+  //         newObj[key] += obj[key];
+  //       } else {
+  //         newObj[key] = obj[key];
+  //       }
+  //     }
+  //   }
+  // }
+  // return newObj;
+  const output = {};
+
+  objects.forEach((obj) => {
+    Object.entries(obj).forEach(([key, value]) => {
+      // console.log(Object.entries(obj)); // [ [ 'a', 1 ], [ 'b', 2 ] ] and [ [ 'b', 3 ], [ 'c', 5 ] ]
+      output[key] = (output[key] || 0) + value;
+      //! output with key-property[key] = (output[key] - the current key property does not exist yet, so that's why write 0) + value;
+      //* Key 'a' is exist in a new created 'output' object? Nope, so output[a-key] = 0 + value, result a: 1;
+      //* Key 'b' is exist in a new created 'output' object? Nope, so output[b-key] = 0 + value, result b: 2;
+      //* Key 'b' is exist in a new created 'output' object? Yes, so output[b-key] = 2(previous value of output[b-key]) + value, result b: 5;
+      //* Key 'c' is exist in a new created 'output' object? Nope, so output[c-key] = 0 + value, result a: 5;
+    });
+    // todo ..OR
+    // const props = Object.entries(obj);
+    // props.forEach((el) => {
+    //   // console.log(el); // [ 'a', 1 ] [ 'b', 2 ] [ 'b', 3 ] [ 'c', 5 ]
+    //   output[el[0]] = (output[el[0]] || 0) + el[1];
+    // });
+  });
+  return output;
 }
 
 /**
