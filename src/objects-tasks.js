@@ -58,11 +58,13 @@ function mergeObjects(objects) {
     Object.entries(obj).forEach(([key, value]) => {
       // console.log(Object.entries(obj)); // [ [ 'a', 1 ], [ 'b', 2 ] ] and [ [ 'b', 3 ], [ 'c', 5 ] ]
       output[key] = (output[key] || 0) + value;
-      //! output with key-property[key] = (output[key] - the current key property does not exist yet, so that's why write 0) + value;
-      //* Key 'a' is exist in a new created 'output' object? Nope, so output[a-key] = 0 + value, result a: 1;
-      //* Key 'b' is exist in a new created 'output' object? Nope, so output[b-key] = 0 + value, result b: 2;
-      //* Key 'b' is exist in a new created 'output' object? Yes, so output[b-key] = 2(previous value of output[b-key]) + value, result b: 5;
-      //* Key 'c' is exist in a new created 'output' object? Nope, so output[c-key] = 0 + value, result a: 5;
+      //! output object with key-property[key] does not exist yet = (output[key] - current key property now exist, but the value of [key] is undefined, so that's why write || 0, it means output['key'] gets init value 0) + value;
+      //* First iteration:
+      //* Key 'a' does not exist in a new created 'output' object. So output['a'-key] = 0 + value, result a: 1;
+      //* Key 'b' does not exist in a new created 'output' object. So output['b'-key] = 0 + value, result b: 2;
+      //* Second iteration:
+      //* Key 'b' is exist in a new created 'output' object. Yes, so output['b'-key] = 2(previous value of output[b-key] = 2) + value, result b: 5;
+      //* Key 'c' does not exist in a new created 'output' object. So output['c'-key] = 0 + value, result a: 5;
     });
     // todo ..OR
     // const props = Object.entries(obj);
@@ -87,8 +89,18 @@ function mergeObjects(objects) {
  *    removeProperties({name: 'John', age: 30, city: 'New York'}, 'age') => {name: 'John', city: 'New York'}
  *
  */
-function removeProperties(/* obj, keys */) {
-  throw new Error('Not implemented');
+function removeProperties(obj, keys) {
+  const targetObject = obj;
+  if (Object.keys(obj).includes(keys[0])) {
+    delete targetObject[keys[0]];
+  }
+  if (Object.keys(obj).includes(keys[1])) {
+    delete targetObject[keys[1]];
+  }
+  if (Object.keys(obj).includes(keys)) {
+    delete targetObject[keys];
+  }
+  return obj;
 }
 
 /**
@@ -103,8 +115,20 @@ function removeProperties(/* obj, keys */) {
  *    compareObjects({a: 1, b: 2}, {a: 1, b: 2}) => true
  *    compareObjects({a: 1, b: 2}, {a: 1, b: 3}) => false
  */
-function compareObjects(/* obj1, obj2 */) {
-  throw new Error('Not implemented');
+function compareObjects(obj1, obj2) {
+  const primaryObj = Object.entries(obj1).join(',');
+  const secondaryObj = Object.entries(obj2).join(',');
+  if (primaryObj === secondaryObj) {
+    return true;
+  }
+  return false;
+  //* &&
+  // const primaryObj = Object.entries(obj1);
+  // const secondaryObj = Object.entries(obj2);
+  // if (JSON.stringify(primaryObj) === JSON.stringify(secondaryObj)) {
+  //   return true;
+  // }
+  // return false;
 }
 
 /**
@@ -118,8 +142,17 @@ function compareObjects(/* obj1, obj2 */) {
  *    isEmptyObject({}) => true
  *    isEmptyObject({a: 1}) => false
  */
-function isEmptyObject(/* obj */) {
-  throw new Error('Not implemented');
+function isEmptyObject(obj) {
+  const objLength = Object.entries(obj).length;
+  if (objLength === 0) {
+    return true;
+  }
+  return false;
+  //* &&
+  // if (Object.keys(obj).length === 0) {
+  //   return true;
+  // }
+  // return false;
 }
 
 /**
@@ -138,8 +171,9 @@ function isEmptyObject(/* obj */) {
  *    immutableObj.newProp = 'new';
  *    console.log(immutableObj) => {a: 1, b: 2}
  */
-function makeImmutable(/* obj */) {
-  throw new Error('Not implemented');
+function makeImmutable(obj) {
+  const immutabledNow = Object.freeze(obj);
+  return immutabledNow;
 }
 
 /**
@@ -152,8 +186,26 @@ function makeImmutable(/* obj */) {
  *    makeWord({ a: [0, 1], b: [2, 3], c: [4, 5] }) => 'aabbcc'
  *    makeWord({ H:[0], e: [1], l: [2, 3, 8], o: [4, 6], W:[5], r:[7], d:[9]}) => 'HelloWorld'
  */
-function makeWord(/* lettersObject */) {
-  throw new Error('Not implemented');
+function makeWord(lettersObject) {
+  const arr = [];
+
+  // for (const [letter, positions] of Object.entries(lettersObject)) {
+  //   positions.forEach((position) => {
+  //     arr[position] = letter;
+  //   });
+  // }
+
+  const objEntries = Object.entries(lettersObject);
+
+  objEntries.forEach(([letter, positions]) => {
+    positions.forEach((position) => {
+      arr[position] = letter;
+    });
+  });
+  // console.log(arr); // [ 'a', 'a', 'b', 'b', 'c', 'c' ]
+
+  // Join the array into a string and return it
+  return arr.join('');
 }
 
 /**
